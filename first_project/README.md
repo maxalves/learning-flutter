@@ -1,6 +1,6 @@
 # flutter_learning
 
-First thing i have ever done in flutter
+First thing i have ever done in flutter while learning from multiple online courses and medium posts
 
 ## Getting Started
 
