@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:second_project/widgets/chart.dart';
 import 'package:second_project/widgets/new_transaction.dart';
 import 'package:second_project/widgets/transaction_list.dart';
 import 'package:uuid/uuid.dart';
@@ -15,7 +16,22 @@ class MyApp extends StatelessWidget {
     initializeDateFormatting('br', null);
     Intl.defaultLocale = 'pt_BR';
     return MaterialApp(
-      title: 'Flutter App',
+      title: 'Despesas Pessoais',
+      theme: ThemeData(
+          primarySwatch: Colors.purple,
+          accentColor: Colors.amber,
+          fontFamily: 'Quicksand',
+          textTheme: ThemeData.light().textTheme.copyWith(
+              headline6: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18)),
+          appBarTheme: AppBarTheme(
+              textTheme: ThemeData.light().textTheme.copyWith(
+                  headline6: TextStyle(
+                      fontFamily: 'OpenSans',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold)))),
       home: MyHomePage(),
     );
   }
@@ -28,19 +44,25 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = [
-    Transaction(
-      id: Uuid(),
-      title: 'Compras Online',
-      amount: 69.99,
-      date: DateTime.now(),
-    ),
-    Transaction(
-      id: Uuid(),
-      title: 'Bar do Zé',
-      amount: 9.99,
-      date: DateTime.now(),
-    ),
+    // Transaction(
+    //   id: Uuid(),
+    //   title: 'Compras Online',
+    //   amount: 69.99,
+    //   date: DateTime.now(),
+    // ),
+    // Transaction(
+    //   id: Uuid(),
+    //   title: 'Bar do Zé',
+    //   amount: 9.99,
+    //   date: DateTime.now(),
+    // ),
   ];
+
+  List<Transaction> get _recentTransactions {
+    return _userTransactions.where((tx){
+      return tx.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
+    }).toList();
+  }
 
   void _addNewTransaction(String txTitle, double amount) {
     final newTx = Transaction(
@@ -63,7 +85,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter App'),
+        title: Text(
+          'Despesas Pessoais',
+          style: TextStyle(fontFamily: 'Open Sans'),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.add),
@@ -75,14 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Container(
-            width: double.infinity,
-            child: Card(
-              color: Colors.blue,
-              child: Text('CHART!'),
-              elevation: 5,
-            ),
-          ),
+          Chart(_recentTransactions),
           TransactionList(_userTransactions),
         ],
       ),
